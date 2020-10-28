@@ -9,19 +9,13 @@ pub struct Binding {
 
 impl Binding {
     pub fn new(s: &str) -> (Self, &str) {
-        let s = match s.strip_prefix("let") {
-            Some(s) => s,
-            None => panic!("Expected 'let'"),
-        };
+        let s = tag("let", s);
         let (_, s) = extract_whitespace(s);
 
         let (name, s) = extract_ident(s);
         let (_, s) = extract_whitespace(s);
 
-        let s = match s.strip_prefix("=") {
-            Some(s) => s,
-            None => panic!("Expected '="),
-        };
+        let s = tag("=", s);
         let (_, s) = extract_whitespace(s);
 
         let (val, s) = Expr::new(s);
