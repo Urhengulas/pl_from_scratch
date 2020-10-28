@@ -1,5 +1,5 @@
 #[derive(Clone, Debug)]
-struct InputStream {
+pub struct InputStream {
     input: Vec<char>,
     pos: usize,
     line: usize,
@@ -8,27 +8,56 @@ struct InputStream {
 
 impl InputStream {
     pub fn new(s: &str) -> Self {
-        todo!()
+        Self {
+            input: s.chars().map(|c| c).collect(),
+            pos: 0,
+            line: 0,
+            col: 0,
+        }
     }
 
     pub fn peek(&self) -> Option<char> {
-        todo!()
+        Some(*self.input.get(self.pos)?)
     }
 
     pub fn next(&mut self) -> Option<char> {
-        todo!()
+        let c = self.peek()?;
+        self.pos += 1;
+        if matches!(c, '\n') {
+            self.line += 1;
+            self.col = 0;
+        } else {
+            self.col += 1;
+        }
+        Some(c)
     }
 
     pub fn eof(&self) -> bool {
-        todo!()
+        matches!(self.peek(), None)
     }
 
     pub fn croak(&self, err_msg: &str) {
-        todo!()
+        panic!("{}:{} – {}", self.line, self.col, err_msg);
     }
 }
 
 fn main() {
-    let input = InputStream::new("let a = 1 + 2");
-    dbg!(input);
+    let mut input = InputStream::new("let a = 1 + 2\nprint(a)");
+    dbg!(&input);
+
+    while input.eof() == false {
+        let InputStream {
+            pos,
+            line,
+            col,
+            input: _,
+        } = input;
+        println!(
+            "{}\t(pos: {}, line: {}, col: {})",
+            input.next().unwrap(),
+            pos,
+            line,
+            col
+        );
+    }
 }
