@@ -9,25 +9,25 @@ pub struct Binding {
 }
 
 impl Binding {
-    pub fn new(s: &str) -> (Self, &str) {
-        let s = tag("let", s);
+    pub fn new(s: &str) -> Result<(Self, &str), String> {
+        let s = tag("let", s)?;
         let (_, s) = extract_whitespace(s);
 
         let (name, s) = extract_ident(s);
         let (_, s) = extract_whitespace(s);
 
-        let s = tag("=", s);
+        let s = tag("=", s)?;
         let (_, s) = extract_whitespace(s);
 
-        let (val, s) = Expr::new(s);
+        let (val, s) = Expr::new(s)?;
 
-        (
+        Ok((
             Self {
                 name: name.to_string(),
                 val,
             },
             s,
-        )
+        ))
     }
 
     pub fn eval(&self, env: &mut Env) {
@@ -42,20 +42,20 @@ mod tests {
     use crate::expr::{Number, Op};
 
     #[test]
-    fn parse_binding() {
+    fn parse_binding_def() {
         assert_eq!(
             Binding::new("let a = 10 / 2"),
-            (
+            Ok((
                 Binding {
                     name: "a".to_string(),
-                    val: Expr {
+                    val: Expr::Operation {
                         lhs: Number(10),
                         rhs: Number(2),
-                        op: Op::Div
-                    }
+                        op: Op::Div,
+                    },
                 },
                 ""
-            )
-        )
+            )),
+        );
     }
 }
