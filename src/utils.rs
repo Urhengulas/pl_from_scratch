@@ -2,6 +2,10 @@ pub(crate) fn extract_digits(s: &str) -> (&str, &str) {
     take_while(|c| c.is_ascii_digit(), s)
 }
 
+pub(crate) fn extract_ident(s: &str) -> (&str, &str) {
+    take_while(|c| c.is_alphanumeric(), s)
+}
+
 pub(crate) fn extract_op(s: &str) -> (&str, &str) {
     let op = &s[0..1];
     match op {
@@ -73,5 +77,15 @@ mod tests {
     #[test]
     fn extract_spaces() {
         assert_eq!(extract_whitespace("    1"), ("    ", "1"));
+    }
+
+    #[test]
+    fn extract_alphabetic_ident() {
+        assert_eq!(extract_ident("abcdEFG stop"), ("abcdEFG", " stop"));
+    }
+
+    #[test]
+    fn extract_alphanumeric_ident() {
+        assert_eq!(extract_ident("foobar1()"), ("foobar1", "()"));
     }
 }
