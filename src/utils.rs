@@ -10,6 +10,14 @@ pub(crate) fn extract_digits(s: &str) -> (&str, &str) {
     (digits, remainder)
 }
 
+pub(crate) fn extract_op(s: &str) -> (&str, &str) {
+    let op = &s[0..1];
+    match op {
+        "+" | "-" | "*" | "/" => (op, &s[1..]),
+        _ => panic!("Couldn't extract operator: {}", op),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -32,5 +40,25 @@ mod tests {
     #[test]
     fn extract_digits_with_no_remainder() {
         assert_eq!(extract_digits("100"), ("100", ""));
+    }
+
+    #[test]
+    fn extract_plus() {
+        assert_eq!(extract_op("+2"), ("+", "2"));
+    }
+
+    #[test]
+    fn extract_minus() {
+        assert_eq!(extract_op("-10"), ("-", "10"));
+    }
+
+    #[test]
+    fn extract_star() {
+        assert_eq!(extract_op("*3"), ("*", "3"));
+    }
+
+    #[test]
+    fn extract_slash() {
+        assert_eq!(extract_op("/4"), ("/", "4"));
     }
 }
