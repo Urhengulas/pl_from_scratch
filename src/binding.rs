@@ -1,3 +1,4 @@
+use crate::env::Env;
 use crate::expr::Expr;
 use crate::utils::*;
 
@@ -27,6 +28,10 @@ impl Binding {
             },
             s,
         )
+    }
+
+    pub fn eval(&self, env: &mut Env) {
+        env.store_binding(self.name.clone(), self.val.eval())
     }
 }
 
