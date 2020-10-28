@@ -11,9 +11,9 @@ pub struct Binding {
 impl Binding {
     pub fn new(s: &str) -> Result<(Self, &str), String> {
         let s = tag("let", s)?;
-        let (_, s) = extract_whitespace(s);
+        let (_, s) = extract_whitespace_1(s)?;
 
-        let (name, s) = extract_ident(s);
+        let (name, s) = extract_ident(s)?;
         let (_, s) = extract_whitespace(s);
 
         let s = tag("=", s)?;
@@ -56,6 +56,14 @@ mod tests {
                 },
                 ""
             )),
+        );
+    }
+
+    #[test]
+    fn cannot_parse_binding_def_without_space_after_let() {
+        assert_eq!(
+            Binding::new("letaaa=1+2"),
+            Err("expected a space".to_string()),
         );
     }
 }
